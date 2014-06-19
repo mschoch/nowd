@@ -27,7 +27,8 @@ func (t TimeRevCache) CheckAndUpdate(key string, rev int, value interface{}) boo
 	defer t.mutex.Unlock()
 	currentRev, existsAndNotExpired := t.getrev(key)
 	if existsAndNotExpired {
-		if rev <= currentRev {
+		// rev 0 (not specified) will always overwrite
+		if rev != 0 && rev <= currentRev {
 			return false
 		}
 		t.set(key, rev, value)
